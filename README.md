@@ -4,3 +4,33 @@
 Various numerical mathematical stuff. 
 
 2021, Xavier R. Hoffmann <xrhoffmann@gmail.com>
+
+
+## `root_finding`
+
+Module to find roots of univariate functions.  Two methods are implemented:
+- bisection
+- hybrid secant-bisection
+
+For 
+
+## `histograms`
+
+Module to compute histograms.
+
+- CODE
+- DOCS?
+
+## `triangle_matrix`
+
+Module to compute operations with triangular matrices.
+
+- CODE
+- DOCS: quick
+
+## `guassian_quadratures`
+
+Module to integrate univariate functions using Gaussian quadratures.
+
+- CODE
+- DOCS: adapt
