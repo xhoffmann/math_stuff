@@ -7,15 +7,14 @@ import numpy as np
 
 
 def binning_lin(
-    *, x_min: float, x_max: float, bin_width: float, fuse_last_bin: bool = False
+    *, x_min: float, x_max: float, bin_width: float, fuse_last_bin: bool = True
 ) -> np.ndarray:
-    """
-    Computes linear binning from range (start and end) and bin width.
+    """Computes linear binning from range and bin width.
 
     All bins except last have size `bin_width`. If `fuse_last_bin` is
     False, the last bin will be smaller than or equal to `bin_width`. If
     `fuse_last_bin` is True, the remaining part will be fused to the
-    one-to-last bin.
+    previous bin.
 
     Args:
         x_min: Lower range of the bins.
@@ -43,10 +42,9 @@ def binning_lin(
     num_bins = int((x_max - x_min) / bin_width)
     bins = np.array(range(num_bins + 1)) * bin_width + x_min
     if bins[-1] < x_max:
-        if fuse_last_bin:
-            bins[-1] = x_max
-        else:
-            bins = np.append(bins, (x_max,))
+        bins = np.append(bins, (x_max,))
+        if fuse_last_bin and len(bins) > 2:
+            bins = np.append(bins[:-2], (bins[-1],))
     return bins
 
 
