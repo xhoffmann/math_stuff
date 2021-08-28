@@ -393,8 +393,7 @@ def histogram_lin2lin(
     x_align: Optional[str] = None,
     fuse_last_bin: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Transforms a linear histogram to another linear histogram.
+    """Transforms a linear histogram to another linear histogram.
 
     Bin edges given or computed from number of equal-sized bins or
         computed from bin width.
@@ -436,15 +435,15 @@ def histogram_lin2lin(
             closed interval [·,·].
     """
     return histogram_lin(
-            x_data=x_data,
-            bins=bins,
-            bin_width=bin_width,
-            x_min=x_min,
-            x_max=x_max,
-            density=density,
-            x_align=x_align,
-            weights=y_data,
-            fuse_last_bin=fuse_last_bin,
+        x_data=x_data,
+        bins=bins,
+        bin_width=bin_width,
+        x_min=x_min,
+        x_max=x_max,
+        density=density,
+        x_align=x_align,
+        weights=y_data,
+        fuse_last_bin=fuse_last_bin,
     )
 
 
@@ -461,8 +460,7 @@ def histogram_lin2log(
     x_align: Optional[str] = None,
     fuse_last_bin: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Transforms a linear histogram to a logarithmic histogram.
+    """Transforms a linear histogram to a logarithmic histogram.
 
     Bin edges given or computed from number of logarithmically spaced
         bins or computed from initial bin width and exponential increase
@@ -514,16 +512,16 @@ def histogram_lin2log(
     Notes:
         All bins except last are half-open intervals [·,·), last bin is
             closed interval [·,·].
-     """
+    """
     return histogram_log(
-            x_data=x_data,
-            bins=bins,
-            bin_width_factor=bin_width_factor,
-            bin_width_initial=bin_width_initial,
-            x_min=x_min,
-            x_max=x_max,
-            density=density,
-            x_align=x_align,
-            weights=y_data,
-            fuse_last_bin=fuse_last_bin,
+        x_data=x_data,
+        bins=bins,
+        bin_width_factor=bin_width_factor,
+        bin_width_initial=bin_width_initial,
+        x_min=x_min,
+        x_max=x_max,
+        density=density,
+        x_align=x_align,
+        weights=y_data,
+        fuse_last_bin=fuse_last_bin,
     )
