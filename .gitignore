@@ -120,3 +120,5 @@ cache/
 # dummy data
 dump/
 temp/
+
+devops.py
