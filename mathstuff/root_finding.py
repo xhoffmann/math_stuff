@@ -115,7 +115,7 @@ def hybrid_secant_bisection(
     while abs(x0 - x1) > eps:
         # compute new value
         try:
-            x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
+            x2 = x0 - f0 * (x1 - x0) / (f1 - f0)
             if x2 < xl or x2 > xr:
                 x2 = 0.5 * (xl + xr)
         except ZeroDivisionError:
