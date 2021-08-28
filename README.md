@@ -12,7 +12,7 @@ Module to find roots of univariate functions.  Two methods are implemented:
 - bisection
 - hybrid secant-bisection
 
-For 
+See [docs](https://github.com/xhoffmann/math_stuff/blob/main/docs/root_finding.pdf) for details.
 
 ## `histograms`
 
