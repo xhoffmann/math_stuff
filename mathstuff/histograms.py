@@ -2,7 +2,7 @@
 
 2019, Xavier R. Hoffmann <xrhoffmann@gmail.com>
 """
-
+import warnings
 from typing import Sequence, Optional, Union, Tuple
 
 import numpy as np
@@ -163,15 +163,14 @@ def binning_align(
 
 
 def histogram_lin(
-    *,
     x_data: Sequence,
     bins: Optional[Union[Sequence, int]] = None,
     bin_width: Optional[float] = None,
     x_min: Optional[float] = None,
     x_max: Optional[float] = None,
     density: bool = True,
-    weights: Optional[Sequence] = None,
     x_align: Optional[str] = None,
+    weights: Optional[Sequence] = None,
     fuse_last_bin: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Computes a histogram with linear binning.
@@ -203,7 +202,7 @@ def histogram_lin(
             the probability *density* function at the bin, normalized
             such that the *integral* over the range is 1.
         x_align: Abscissas align mode, can be 'left', 'center' or
-            'right'. Defaults to 'center'.
+            'right'.
         weights: An array of weights, of the same shape as `x_data`.
             Each value in `x_data` only contributes its associated
             weight towards the bin count (instead of 1).
@@ -223,7 +222,14 @@ def histogram_lin(
     # obtain x_min and x_max
     if x_min is None:
         x_min = min(x_data)
-    if x_max is None or x_max < x_min:
+    if x_max is None:
+        x_max = max(x_data)
+    if x_max < x_min:
+        warn = [
+            f"x_max ({x_max}) is smaller than x_min ({x_min}).",
+            "Using default value max(x_data) ({max(x_data)}).",
+        ]
+        warnings.warn(" ".join(warn), UserWarning)
         x_max = max(x_data)
 
     # construct bins_list
@@ -252,3 +258,4 @@ def histogram_lin(
     )
     x = binning_align(bin_edges=bin_edges, x_align=x_align, log=False)
     return x, y
+
