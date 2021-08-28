@@ -3,7 +3,7 @@
 2019, Xavier R. Hoffmann <xrhoffmann@gmail.com>
 """
 
-from typing import Sequence, Optional
+from typing import Sequence, Optional, Union, Tuple
 
 import numpy as np
 
@@ -48,7 +48,6 @@ def binning_lin(
         if fuse_last_bin and len(bins) > 2:
             bins = np.append(bins[:-2], (bins[-1],))
     return bins
-
 
 
 def binning_log(
@@ -107,10 +106,9 @@ def binning_log(
     # select bins with right edge < x_max
     mask = bins_list < (x_max - x_min)
     bins = np.append(np.append((x_min,), bins_list[mask] + x_min), (x_max,))
-    if len(bins) > 2 and bins[-1] not in bins_list+x_min and fuse_last_bin:
+    if len(bins) > 2 and bins[-1] not in bins_list + x_min and fuse_last_bin:
         bins = np.append(bins[:-2], (bins[-1],))
     return bins
-
 
 
 def binning_align(
@@ -142,9 +140,13 @@ def binning_align(
     bin_edges = np.array(bin_edges)
     if x_align is None:
         if log:
-            x = binning_align(bin_edges=bin_edges, x_align=_x_align_default_log, log=log)
+            x = binning_align(
+                bin_edges=bin_edges, x_align=_x_align_default_log, log=log
+            )
         else:
-            x = binning_align(bin_edges=bin_edges, x_align=_x_align_default_lin, log=log)
+            x = binning_align(
+                bin_edges=bin_edges, x_align=_x_align_default_lin, log=log
+            )
     elif x_align == "left":
         x = bin_edges[:-1]
     elif x_align == "right":
@@ -160,3 +162,93 @@ def binning_align(
     return x
 
 
+def histogram_lin(
+    *,
+    x_data: Sequence,
+    bins: Optional[Union[Sequence, int]] = None,
+    bin_width: Optional[float] = None,
+    x_min: Optional[float] = None,
+    x_max: Optional[float] = None,
+    density: bool = True,
+    weights: Optional[Sequence] = None,
+    x_align: Optional[str] = None,
+    fuse_last_bin: bool = False,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Computes a histogram with linear binning.
+
+    Bin edges given or computed from number of equal-sized bins or
+        computed from bin width.
+    If `bin_width` specified, don't pass `bins`. In this case, the last
+        bin will be smaller than or equal to `bin_width` (if not
+        `fuse_last_bin`, else last and one-to-last are fused).
+    Range may be specified through `x_min` and `x_max`, else defaults to
+        min and max of input data.
+    Bin abscissas can be 'left', 'center' or 'right' aligned.
+
+    Args:
+        x_data: Input data. The histogram is computed over the flattened
+            array.
+        bins: If `bins` is an int, it defines the number of equal-width
+            bins in the given range. If `bins` is a sequence, it defines
+            a monotonically increasing array of bin edges, including the
+            rightmost edge, allowing for non-uniform bin widths (x_min
+            and x_max are ignored). If `bins`is None, `bin_width` is
+            required.
+        bin_width: Length of equal width bins, must be positive.
+        x_min: Lower range of the bins, smaller values are ignored.
+        x_max: Upper range of the bins, larger values are ignored, must
+            be larger than x_min.
+        density: If ``False``, the result will contain the number of
+            samples in each bin. If ``True``, the result is the value of
+            the probability *density* function at the bin, normalized
+            such that the *integral* over the range is 1.
+        x_align: Abscissas align mode, can be 'left', 'center' or
+            'right'. Defaults to 'center'.
+        weights: An array of weights, of the same shape as `x_data`.
+            Each value in `x_data` only contributes its associated
+            weight towards the bin count (instead of 1).
+        fuse_last_bin: Join last and one-to-last bins if ``True``.
+
+    Returns:
+        Abscissas, counts/pdf.
+
+    Raises:
+        ValueError: If `bin_width` is negative or zero.
+        ValueError: If type of `bins` not supported.
+
+    Notes:
+        All bins except last are half-open intervals [·,·), last bin is
+            closed interval [·,·].
+    """
+    # obtain x_min and x_max
+    if x_min is None:
+        x_min = min(x_data)
+    if x_max is None or x_max < x_min:
+        x_max = max(x_data)
+
+    # construct bins_list
+    if bins is None:
+        # construct list from bin_width
+        if bin_width is None or bin_width <= 0:
+            err = f"bin_width ({bin_width}) must be positive."
+            raise ValueError(err)
+        bins_list = binning_lin(
+            x_min=x_min, x_max=x_max, bin_width=bin_width, fuse_last_bin=fuse_last_bin
+        )
+    elif type(bins) is int:
+        # construct list from number of bins
+        bins_list = np.linspace(x_min, x_max, bins + 1)
+    elif hasattr(bins, "__len__"):
+        # cast list to numpy array
+        bins_list = np.array(bins)
+        bins_list.sort()
+    else:
+        # raise error
+        err = f"Unsupported bins type ({type(bins)})."
+        raise ValueError(err)
+
+    y, bin_edges = np.histogram(
+        x_data, bins=bins_list, density=density, weights=weights
+    )
+    x = binning_align(bin_edges=bin_edges, x_align=x_align, log=False)
+    return x, y
