@@ -381,3 +381,149 @@ def histogram_log(
     return x, y
 
 
+def histogram_lin2lin(
+    *,
+    x_data: Sequence,
+    y_data: Sequence,
+    bins: Optional[Union[Sequence, int]] = None,
+    bin_width: Optional[float] = None,
+    x_min: Optional[float] = None,
+    x_max: Optional[float] = None,
+    density: bool = True,
+    x_align: Optional[str] = None,
+    fuse_last_bin: bool = False,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Transforms a linear histogram to another linear histogram.
+
+    Bin edges given or computed from number of equal-sized bins or
+        computed from bin width.
+    If `bin_width` specified, don't pass `bins`. In this case, the last
+        bin will be smaller than or equal to `bin_width` (if not
+        `fuse_last_bin`, else last and one-to-last are fused).
+    Range may be specified through `x_min` and `x_max`, else defaults to
+        min and max of input data.
+    Bin abscissas can be 'left', 'center' or 'right' aligned.
+
+    Args:
+        x_data: Input data. Input abscissas. The histogram is computed
+            over the flattened array.
+        y_data: Input counts or pdf, assigned as weights to input
+            abscissas.
+        bins: If `bins` is an int, it defines the number of equal-width
+            bins in the given range. If `bins` is a sequence, it defines
+            a monotonically increasing array of bin edges, including the
+            rightmost edge, allowing for non-uniform bin widths (x_min
+            and x_max are ignored). If `bins`is None, `bin_width` is
+            required.
+        bin_width: Length of equal width bins, must be positive.
+        x_min: Lower range of the bins, smaller values are ignored.
+        x_max: Upper range of the bins, larger values are ignored, must
+            be larger than x_min.
+        density: If ``False``, the result will contain the number of
+            samples in each bin. If ``True``, the result is the value of
+            the probability *density* function at the bin, normalized
+            such that the *integral* over the range is 1.
+        x_align: Abscissas align mode, can be 'left', 'center' or
+            'right'.
+        fuse_last_bin: Join last and one-to-last bins if ``True``.
+
+    Returns:
+        Abscissas, counts/pdf.
+
+    Notes:
+        All bins except last are half-open intervals [·,·), last bin is
+            closed interval [·,·].
+    """
+    return histogram_lin(
+            x_data=x_data,
+            bins=bins,
+            bin_width=bin_width,
+            x_min=x_min,
+            x_max=x_max,
+            density=density,
+            x_align=x_align,
+            weights=y_data,
+            fuse_last_bin=fuse_last_bin,
+    )
+
+
+def histogram_lin2log(
+    *,
+    x_data: Sequence,
+    y_data: Sequence,
+    bins: Optional[Union[Sequence, int]] = None,
+    bin_width_initial: Optional[float] = None,
+    bin_width_factor: Optional[float] = None,
+    x_min: Optional[float] = None,
+    x_max: Optional[float] = None,
+    density: bool = True,
+    x_align: Optional[str] = None,
+    fuse_last_bin: bool = False,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Transforms a linear histogram to a logarithmic histogram.
+
+    Bin edges given or computed from number of logarithmically spaced
+        bins or computed from initial bin width and exponential increase
+        factor.
+    If `bin_width_initial` and `bin_wiwdth_factor` specified, don't pass
+        `bins`. In this case, the last bin will be smaller than or equal
+        to the exponentially increasing sequence (if not
+        `fuse_last_bin`, else last and one-to-last are fused).
+    Range may be specified through `x_min` and `x_max`, else defaults to
+        min and max of input data.
+    Bin abscissas can be 'left', 'center' or 'right' aligned.
+
+    Args:
+        x_data: Input data. The histogram is computed over the flattened
+            array.
+        y_data: Input counts or pdf, assigned as weights to input
+            abscissas.
+        bins: If `bins` is an int, it defines the number of
+            logarithmically spaced bins in the given range. If `bins` is
+            a sequence, it defines a monotonically increasing array of
+            bin edges, including the rightmost edge, allowing for
+            non-uniform bin widths (x_min and x_max are ignored). If
+            `bins` is None, `bin_width_initial` and `bin_width_factor`
+            are required.
+        bin_width_initial: Width of first bin, must be positive.
+        bin_width_factor: Exponential increase of bin widths, must be
+            larger than or equal to 1.
+        x_min: Lower range of the bins, smaller values are ignored, must
+            be positive.
+        x_max: Upper range of the bins, larger values are ignored, must
+            be larger than x_min.
+        density: If ``False``, the result will contain the number of
+            samples in each bin. If ``True``, the result is the value of
+            the probability *density* function at the bin, normalized
+            such that the *integral* over the range is 1.
+        x_align: Abscisses align mode, can be 'left', 'center' or
+            'right'.
+        fuse_last_bin: Join last and one-to-last bins if ``True``.
+
+    Returns:
+        Abscissas, counts/pdf.
+
+    Raises:
+        ValueError: If `x_min` is negative or zero.
+        ValueError: If `bin_width` is negative or zero.
+        ValueError: If `bin_factor` is smaller than 1.
+        ValueError: If type of `bins` not supported.
+
+    Notes:
+        All bins except last are half-open intervals [·,·), last bin is
+            closed interval [·,·].
+     """
+    return histogram_log(
+            x_data=x_data,
+            bins=bins,
+            bin_width_factor=bin_width_factor,
+            bin_width_initial=bin_width_initial,
+            x_min=x_min,
+            x_max=x_max,
+            density=density,
+            x_align=x_align,
+            weights=y_data,
+            fuse_last_bin=fuse_last_bin,
+    )
