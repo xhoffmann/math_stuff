@@ -38,7 +38,10 @@ See [docs](https://github.com/xhoffmann/math_stuff/blob/main/docs/triangle_matri
 
 ## `guassian_quadratures`
 
-Module to integrate univariate functions using Gaussian quadratures.
+Module to integrate univariate functions using Gaussian quadratures. For now the only implementation is intregration in a closed interval using Legendre poynomials. 
 
-- CODE
-- DOCS: adapt
+- evaluate Legendre polynomials (`legendre_polynomial`)
+- find root bounds for bisection method (`find_bisection_bounds`)
+- integrate using Legendre polynomials Gaussian quadrature (`integrate_legendre`)
+
+See [docs](https://github.com/xhoffmann/math_stuff/blob/main/docs/gaussian_quadratures.pdf) for details.
