@@ -7,7 +7,7 @@
 import numpy as np
 
 
-def shift_vector(vec: np.ndarray, shift: int) -> np.ndarray:
+def shift_vector(*, vec: np.ndarray, shift: int) -> np.ndarray:
     """Shifts positions of a 1d array.
 
     If `shift` is negative, values move down.
@@ -32,7 +32,7 @@ def shift_vector(vec: np.ndarray, shift: int) -> np.ndarray:
         return vec
 
 
-def shift_matrix_rows(mat: np.ndarray, shift: int) -> np.ndarray:
+def shift_matrix_rows(*, mat: np.ndarray, shift: int) -> np.ndarray:
     """Shifts rows of a 2d array.
 
     If `shift` is negative, rows move down.
@@ -80,10 +80,10 @@ def reverse_cumsum(vec: np.ndarray, shift: int = 0) -> np.ndarray:
         With shift=k, w(i)=sum_{j=i+k)^{end}v(j).
     """
     aux = np.flip(np.cumsum(np.flip(vec)))
-    return shift_vector(aux, shift)
+    return shift_vector(vec=aux, shift=shift)
 
 
-def triangular_dot(mat: np.ndarray, vec: np.ndarray, shift: int = 0) -> np.ndarray:
+def triangular_dot(*, mat: np.ndarray, vec: np.ndarray, shift: int = 0) -> np.ndarray:
     """(Shifted) Matrix product of upper-triangular terms.
 
     Computes matrix product reduced to upper-triangular terms.
@@ -103,10 +103,10 @@ def triangular_dot(mat: np.ndarray, vec: np.ndarray, shift: int = 0) -> np.ndarr
         With shift=k, w(i)=sum_{j=i+k}^{end}A(i+k,j)*v(j).
     """
     aux_mat = mat * vec
-    return triangular_sum_rows(aux_mat, shift)
+    return triangular_sum_rows(mat=aux_mat, shift=shift)
 
 
-def triangular_sum_rows(mat: np.ndarray, shift: int = 0) -> np.ndarray:
+def triangular_sum_rows(*, mat: np.ndarray, shift: int = 0) -> np.ndarray:
     """Sum matrix rows of upper-triangular terms.
 
     Sums matrix by rows, reduced to upper-triangular terms.
@@ -125,10 +125,10 @@ def triangular_sum_rows(mat: np.ndarray, shift: int = 0) -> np.ndarray:
     """
     aux_mat = np.triu(mat)
     aux_vec = np.sum(aux_mat, axis=1)
-    return shift_vector(aux_vec, shift)
+    return shift_vector(vec=aux_vec, shift=shift)
 
 
-def triangular_sum_columns(mat: np.ndarray, row_shift: int = 0) -> np.ndarray:
+def triangular_sum_columns(*, mat: np.ndarray, row_shift: int = 0) -> np.ndarray:
     """Sum matrix columns of triangular terms.
 
     Sums matrix by columns, reduced to triangular terms.
@@ -150,7 +150,7 @@ def triangular_sum_columns(mat: np.ndarray, row_shift: int = 0) -> np.ndarray:
 
 
 def triangular_sum_chunks(
-    mat: np.ndarray, row_shift: int = 0, col_shift: int = 0
+    *, mat: np.ndarray, row_shift: int = 0, col_shift: int = 0
 ) -> np.ndarray:
     """Sum matrix as upper-triangular chunks.
 
@@ -177,4 +177,4 @@ def triangular_sum_chunks(
     aux_shift = col_shift - row_shift
     aux_mat = np.triu(aux_mat, k=aux_shift)
     aux_vec = np.sum(aux_mat, axis=0)
-    return shift_vector(aux_vec, shift=col_shift)
+    return shift_vector(vec=aux_vec, shift=col_shift)
