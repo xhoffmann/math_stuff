@@ -51,15 +51,11 @@ def shift_matrix_rows(mat: np.ndarray, shift: int) -> np.ndarray:
     """
     if shift < 0:
         aux = np.roll(mat, -shift, axis=0)
-        aux[
-            :-shift,
-        ] = 0.0
+        aux[:-shift, :] = 0.0
         return aux
     elif shift > 0:
         aux = np.roll(mat, -shift, axis=0)
-        aux[
-            -shift:,
-        ] = 0.0
+        aux[-shift:, :] = 0.0
         return aux
     else:
         return mat
