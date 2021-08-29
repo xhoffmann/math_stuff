@@ -34,7 +34,7 @@ Module to compute sums and transformations with vectors and triangular matrices.
 - sum columns of upper-triangular matrix terms (`triangular_sum_colums`)
 - sum terms of upper-triangular sub-matrices (`triangular_sum_chunks`)
 
-See docs for details.
+See [docs](https://github.com/xhoffmann/math_stuff/blob/main/docs/triangle_matrix.pdf) for details.
 
 ## `guassian_quadratures`
 
