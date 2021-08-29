@@ -1,6 +1,6 @@
 """Performs vector and matrix operations.
 
-2020, Xavier Hoffmann <xrhoffmann@gmail.com>
+2020, Xavier R. Hoffmann <xrhoffmann@gmail.com>
 """
 
 # external imports
@@ -92,7 +92,7 @@ def triangular_dot(mat: np.ndarray, vec: np.ndarray, shift: int = 0) -> np.ndarr
     Output array has same shape as input array.
 
     Args:
-        mat: Arbitrary square matrix, 2d array.
+        mat: Arbitrary matrix, 2d array.
         vec: Arbitrary vector, 1d array.
         shift: Shift rows up (positive) or down (negative).
 
@@ -102,9 +102,8 @@ def triangular_dot(mat: np.ndarray, vec: np.ndarray, shift: int = 0) -> np.ndarr
     Note:
         With shift=k, w(i)=sum_{j=i+k}^{end}A(i+k,j)*v(j).
     """
-    aux_mat = np.triu(mat)
-    aux_vec = np.dot(aux_mat, vec)
-    return shift_vector(aux_vec, shift)
+    aux_mat = mat * vec
+    return triangular_sum_rows(aux_mat, shift)
 
 
 def triangular_sum_rows(mat: np.ndarray, shift: int = 0) -> np.ndarray:
@@ -115,7 +114,7 @@ def triangular_sum_rows(mat: np.ndarray, shift: int = 0) -> np.ndarray:
     Replaces null values with 0.
 
     Args:
-        mat: Arbitrary square matrix, 2d array.
+        mat: Arbitrary matrix, 2d array.
         shift: Shift positions up (positive) or down (negative).
 
     Returns:
@@ -136,7 +135,7 @@ def triangular_sum_columns(mat: np.ndarray, row_shift: int = 0) -> np.ndarray:
     Optionally, exclude above-diagonal or include below-diagonal terms.
 
     Args:
-        mat: Arbitrary square matrix, 2d array.
+        mat: Arbitrary matrix, 2d array.
         row_shift: Include below-diagonal terms (positive) or exclude
             above-diagonal terms (negative).
 
@@ -161,7 +160,7 @@ def triangular_sum_chunks(
     Output array has same shape as input array.
 
     Args:
-        mat: Arbitrary square matrix, 2d array.
+        mat: Arbitrary matrix, 2d array.
         row_shift: Include below-diagonal terms (positive) or exclude
             above-diagonal terms (negative).
         col_shift: Include left-diagonal terms (positive) or exclude
