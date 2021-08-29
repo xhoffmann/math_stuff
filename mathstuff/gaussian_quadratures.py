@@ -42,7 +42,7 @@ def find_bisection_bounds(
         polynomial: Function to evaluate polynomial.
 
     Returns:
-        Value of polynomial.
+        Bisection bounds for n roots.
     """
     k = 1
     while True:
