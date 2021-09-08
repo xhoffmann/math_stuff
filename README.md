@@ -5,6 +5,7 @@ Various numerical mathematical stuff: root finding, histograms, triangular matri
 
 2021, Xavier R. Hoffmann <xrhoffmann@gmail.com>
 
+This repository is licensed under the MIT License.
 
 ## `root_finding`
 
